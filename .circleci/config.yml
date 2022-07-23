@@ -17,14 +17,13 @@ jobs:
       - eb/setup
       # install dependencies in both apps
       - run:
-          name: Installing Frontend
-          command: |
-            npm run frontend:install
-      - run:
           name: Installing Backend
           command: |
             npm run backend:install
-      
+      - run:
+          name: Installing Frontend
+          command: |
+            npm run frontend:install
       # build front-end and backend
       - run:
           name: Building Backend
