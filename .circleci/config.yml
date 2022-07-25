@@ -34,15 +34,14 @@ jobs:
           command: |
             npm run frontend:build
       # deploy front-end and backend 
-      # - run:
-      #     name: Deploying Backend
-      #     command: |
-      #       npm run backend:deploy
-      # - run:
-      #     name: Deploying Frontend
-      #     command: |
-      #       npm run frontend:deploy
-
+      - run:
+          name: Deploying Backend
+          command: |
+            npm run backend:deploy
+      - run:
+          name: Deploying Frontend
+          command: |
+            npm run frontend:deploy
 # workflows:
 #   Udagram:
 #     jobs:
