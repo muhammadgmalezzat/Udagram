@@ -38,7 +38,17 @@ jobs:
           name: Building Frontend
           command: |
             npm run frontend:build
-        
+  test:
+    docker:
+      - image: "cimg/base:stable"
+      # more setup needed for testing the application
+    steps:
+      - run:
+          name: Test FrontEnd
+          # TODO: Install, build, deploy in both apps
+          command: |
+            echo "# TODO: Testing FrontEnd"
+
   deploy:
     docker:
       - image: "cimg/base:stable"
@@ -74,6 +84,7 @@ jobs:
 workflows:
   udagram:
     jobs:
+      - test
       - build
       - hold:
           filters:
