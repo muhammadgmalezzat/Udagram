@@ -1,8 +1,8 @@
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
-  aws-cli: circleci/aws-cli@1.3.1
-  eb: circleci/aws-elastic-beanstalk@1.0.0
+  node: circleci/node@5.0.2
+  eb: circleci/aws-elastic-beanstalk@2.0.1
+  aws-cli: circleci/aws-cli@3.1.1
   # different jobs are calles later in the workflows sections
 jobs:
   build:
@@ -19,10 +19,15 @@ jobs:
       - run:
           name: Installing Backend
           command: |
+            echo "TODO: Install dependencies in the the backend API "
             npm run backend:install
       - run:
           name: Installing Frontend
           command: |
+            echo "NODE --version" 
+            echo $(node --version)
+            echo "NPM --version" 
+            echo $(npm --version)
             npm run frontend:install
       # build front-end and backend
       - run:
@@ -33,27 +38,49 @@ jobs:
           name: Building Frontend
           command: |
             npm run frontend:build
+        
+  deploy:
+    docker:
+      - image: "cimg/base:stable"
+      # more setup needed for aws, node, elastic beanstalk
+    steps:
+      - node/install:
+          node-version: '16.15.1' 
+      - eb/setup
+      - aws-cli/setup
+      - checkout
+      - run:
+          name: Envs
+          # TODO: Install, build, deploy in both apps
+          command: |
+            echo "# TODO: Install, build, deploy in both apps"
+            eb init udagram-api-dev --platform node.js --region us-east-1
+            echo "# Deploy"
+            npm run deploy
+            echo "# use EB"
+            eb use udagram-api-dev
+            echo "# EB setenvs"
+            eb setenv POSTGRES_HOST=$POSTGRES_HOST DB_PORT=$DB_PORT POSTGRES_PASSWORD=$POSTGRES_PASSWORD POSTGRES_USERNAME=$POSTGRES_USERNAME POSTGRES_DB=$POSTGRES_DB JWT_SECRET=$JWT_SECRET PORT=$PORT
       # deploy front-end and backend 
-      - run:
-          name: Deploying Frontend
-          command: |
-            npm run frontend:deploy
-      - run:
-          name: Deploying Backend
-          command: |
-            npm run backend:deploy
+      # - run:
+      #     name: Deploying Frontend
+      #     command: |
+      #       npm run frontend:deploy
+      # - run:
+      #     name: Deploying Backend
+      #     command: |
+      #       npm run backend:deploy
       
-# workflows:
-#   Udagram:
-#     jobs:
-#       - test
-#       - build
-#       - hold:
-#           filters:
-#             branches:
-#               only:
-#                 - main
-#           type: approval
-#       - deploy:
-#           requires:
-#             - hold
+workflows:
+  udagram:
+    jobs:
+      - build
+      - hold:
+          filters:
+            branches:
+              only:
+                - main
+          type: approval
+      - deploy:
+          requires:
+            - hold
