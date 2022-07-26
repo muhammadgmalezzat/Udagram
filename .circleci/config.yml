@@ -64,7 +64,6 @@ jobs:
 workflows:
   udagram:
     jobs:
-      - test
       - build
       - hold:
           filters:
