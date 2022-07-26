@@ -38,6 +38,16 @@ jobs:
           name: Building Frontend
           command: |
             npm run frontend:build
+  test:
+    docker:
+      - image: "cimg/base:stable"
+      # more setup needed for testing the application
+    steps:
+      - run:
+          name: Test FrontEnd
+          # TODO: Install, build, deploy in both apps
+          command: |
+            echo "# TODO: Testing FrontEnd"
   deploy:
     docker:
       - image: "cimg/base:stable"
@@ -60,10 +70,10 @@ jobs:
             eb use udagram-api-dev
             echo "# EB setenvs"
             eb setenv POSTGRES_HOST=$POSTGRES_HOST DB_PORT=$DB_PORT POSTGRES_PASSWORD=$POSTGRES_PASSWORD POSTGRES_USERNAME=$POSTGRES_USERNAME POSTGRES_DB=$POSTGRES_DB JWT_SECRET=$JWT_SECRET PORT=$PORT
-      
 workflows:
   udagram:
     jobs:
+      - test
       - build
       - hold:
           filters:
